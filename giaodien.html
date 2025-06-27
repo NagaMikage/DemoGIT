@@ -1,0 +1,335 @@
+<!doctype html>
+<html>
+	
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<style>
+    .foder {
+        border: 1px solid #8DE263;
+        height: 150px;
+        width: 100%;
+        background: #A1E796;
+    }
+    .maincontent {
+        background-color: #FFCE80;
+        padding: 20px;
+    }
+    ul.product_list {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    ul.product_list li {
+        width: 15%;
+        border: 1px solid #000000;
+        margin: 10px 0;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 300px;
+        background-color: #FFF;
+    }
+
+    ul.product_list li img {
+        width: 100%;
+        height: 200px;
+        object-fit: contain;
+    }
+
+    ul.product_list::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+
+    .sidebar {
+        font-size: 30px;
+        margin-top: 20px;
+    }
+
+    p.title_product {
+        text-align: center;
+        text-decoration: none;
+        color: #000000;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    p.gia_product {
+        text-align: center;
+        color: red;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    #main {
+        height: auto;
+        background: #FFCE80;
+    }
+
+    p.title_product, p.gia_product {
+        padding: 5px;
+        margin: 0;
+    }
+
+    h2 {
+        font-size: 30px;
+    }
+
+    p {
+        font-size: 20px;
+    }
+</style>
+
+<title>Nhà sách Naga</title>
+</head>
+	<script src="script.js"></script>
+<body>
+    <div>
+        <header>
+            <h1><em><strong>Nhà sách Naga</strong></em></h1>
+        </header>
+    </div>
+	
+    <div class="container">
+        <nav>
+            <ul>
+                <li><img src="image/Lougou.png" width="93" height="54" alt=""></li>
+                <li class="search-container">
+                    <input type="text" placeholder="Bạn cần tìm gì..." class="search-input" id="search-query">
+                    <i class="fa fa-search search-icon" onclick="searchProducts()"></i>
+                </li>
+
+
+                <li class="dropdown">
+                    <a href="#SP">SẢN PHẨM</a>
+                    <div class="menu">
+                        <ul>
+                            <li><a href="#">Sách tâm lý</a></li>
+                            <li><a href="#">Sách trinh thám</a></li>
+                            <li><a href="#">Sách tâm linh</a></li>
+                            <li><a href="#">Sách dạy nấu ăn</a></li>
+                            <li><a href="#">Sách kinh doanh</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="news_list.php">TIN TỨC</a>
+                    <div class="menu">
+                        <ul>
+                            <li><a href="#">Cuốn sách bán chạy nhất</a></li>
+                            <li><a href="#">Cuốn sách hay nhất</a></li>
+                            <li><a href="#">Cuốn sách nhiều người đọc nhất</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li><a href="#contact-info">LIÊN HỆ</a></li>
+                <li title="Giỏ hàng"><a href="cart.php"><i class="fa fa-shopping-cart" data-id="${product.id}" aria-hidden="true"></i></a></li>
+                <li><a href="login.php">Đăng nhập</a></li>
+                <li><a href="dangki.php">Đăng ký</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div>
+        <section class="slider">
+            <button class="arrow arrow-left"><i class="fa fa-chevron-left"></i></button>
+            <div class="slider-content">
+                <img src="image/slider1.jpg" alt="">
+                <img src="image/slider3.jpg" alt="">
+                <img src="image/slider4.jpg" alt="">
+                <img src="image/slider5.jpg" alt="">
+                <img src="image/slider6.jpg" alt="">
+                <img src="image/slider7.jpg" alt="">
+                <img src="image/Tamlyhoc.jpg" alt="">
+                <img src="image/slider10.png" alt="">
+            </div>
+            <button class="arrow arrow-right"><i class="fa fa-chevron-right"></i></button>
+        </section>
+    </div>
+
+    <div id="main">
+        <div></div><br>
+        <div class="sidebar" id="SP"><b>Sản phẩm</b></div>
+        <div class="maincontent">
+            <ul class="product_list">
+            </ul>
+			
+            <a href="sanpham.php" >Xem thêm sản phẩm</a>
+
+        </div>
+    </div>
+
+	<script>
+	  // Hàm tìm kiếm sản phẩm
+        function searchProducts() {
+            var query = document.getElementById('search-query').value;
+            if (!query) {
+                alert("Vui lòng nhập từ khóa tìm kiếm.");
+                return;
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'search.php?query=' + encodeURIComponent(query), true);
+            xhr.onload = function() {
+                if (this.status == 200) {
+                    var products = JSON.parse(this.responseText);
+                    var output = '';
+
+                    if (products.error) {
+                        output = '<p>' + products.error + '</p>';
+                    } else {
+                        products.forEach(function(product) {
+                            output += `
+                                <li>
+                                    <a href="#">
+                                        <img src="image/${product.hinhanh}" alt="${product.ten_sanpham}">
+                                        <p class="title_product">${product.ten_sanpham}</p>
+                                        <p class="gia_product">Giá: ${product.gia <= 120000}</p>
+                                    </a>
+                                </li>
+                            `;
+                        });
+                    }
+                    document.querySelector('.product_list').innerHTML = output;
+                }
+            };
+            xhr.send();
+        }
+		
+    // Hàm thêm sản phẩm vào giỏ hàng
+    function addToCart(productId) {
+        window.location.href = 'cart.php?action=add&id=' + productId;
+    }
+
+    // Hàm lấy sản phẩm từ file PHP
+    function fetchProducts() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'fetch_products.php', true);
+        xhr.onload = function() {
+            if (this.status == 200) {
+                var products = JSON.parse(this.responseText);
+                var output = '';
+
+                if (products.error) {
+                    output = '<p>' + products.error + '</p>';
+                } else {
+                    products.forEach(function(product) {
+                        output += `
+                            <li>
+                                <a href="#">
+                                    <img src="image/${product.hinhanh}" alt="${product.ten_sanpham}">
+                                    <p class="title_product">${product.ten_sanpham}</p>
+                                    <p class="gia_product">Giá: ${product.gia}</p>
+                                    <p align="center">
+                                        <i class="fa fa-shopping-cart" aria-hidden="true" onclick="addToCart(${product.id})"></i>
+                                    </p>
+                                </a>
+                            </li>
+                        `;
+                    });
+                }
+                document.querySelector('.product_list').innerHTML = output;
+            }
+        };
+        xhr.send();
+    }
+
+    // Kiểm tra xem người dùng đã đăng nhập chưa
+    function checkLoginStatus() {
+        var username = localStorage.getItem('username');
+        var loginLink = document.querySelector('a[href="login.php"]');
+        var registerLink = document.querySelector('a[href="dangki.php"]');
+        var nav = document.querySelector('nav ul');
+
+        if (username) {
+            // Ẩn nút Đăng nhập và Đăng ký
+            loginLink.style.display = 'none';
+            registerLink.style.display = 'none';
+
+            // Tạo và hiển thị nút Đăng xuất + tên người dùng
+            var logoutLi = document.createElement('li');
+            logoutLi.innerHTML = `
+                <span>Xin chào, ${username}!</span> 
+                <a href="#" id="logout">Đăng xuất</a>
+            `;
+            nav.appendChild(logoutLi);
+
+            // Xử lý sự kiện Đăng xuất
+            document.getElementById('logout').addEventListener('click', function() {
+                localStorage.removeItem('username');
+                window.location.reload();  // Tải lại trang sau khi đăng xuất
+            });
+        }
+    }
+
+    // Gọi cả hai hàm khi trang load
+    window.onload = function() {
+        fetchProducts();  // Lấy danh sách sản phẩm
+        checkLoginStatus();  // Kiểm tra trạng thái đăng nhập
+    };
+		
+</script>
+
+	
+    <div class="foder" id="contact-info">
+        <h2>Thông tin liên hệ</h2>
+        <div id="display-contact-info"></div> 
+        <button id="edit-contact-btn">Chỉnh sửa thông tin liên hệ</button>
+        <div id="edit-contact-form" style="display: none;">
+            <textarea id="contact-textarea" rows="5" cols="50"></textarea><br>
+            <button id="save-contact-btn">Lưu</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Hàm khởi tạo CKEditor
+        function initCKEditor() {
+            CKEDITOR.replace('contact-textarea');
+        }
+
+        // Hiển thị thông tin liên hệ từ localStorage
+        function displayContactInfo() {
+            var contactInfo = localStorage.getItem('contactInfo') || "Thông tin liên hệ chưa được cập nhật.";
+            document.getElementById('display-contact-info').innerHTML = contactInfo;
+        }
+
+        // Thiết lập chức năng chỉnh sửa thông tin liên hệ
+        function setupContactEdit() {
+            document.getElementById('edit-contact-btn').addEventListener('click', function() {
+                document.getElementById('edit-contact-form').style.display = 'block';
+                var contactInfo = localStorage.getItem('contactInfo') || "";
+                CKEDITOR.instances['contact-textarea'].setData(contactInfo);
+            });
+
+            document.getElementById('save-contact-btn').addEventListener('click', function() {
+                var contactContent = CKEDITOR.instances['contact-textarea'].getData();
+                localStorage.setItem('contactInfo', contactContent);
+                displayContactInfo(); // Cập nhật hiển thị thông tin
+                document.getElementById('edit-contact-form').style.display = 'none';
+            });
+        }
+
+        // Gọi các hàm khi trang tải xong
+        window.onload = function() {
+    initCKEditor(); 
+    displayContactInfo(); 
+    setupContactEdit(); 
+    fetchProducts(); 
+    checkLoginStatus();
+    fetchProducts();
+};
+
+    </script>
+
+</body>
+</html>
